@@ -7,174 +7,191 @@
 }
 
 body {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: #022c43;
+  background: #f5f7fa;
+  color: #222;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
 header, footer {
-  background: #022c43;
-  color: #a0e9fd;
+  background: #263238;
+  color: #eceff1;
   text-align: center;
-  padding: 1.5rem 1rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 1rem 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 header h1 {
-  font-weight: 900;
-  font-size: 2rem;
-  text-shadow: 1px 1px 3px #007acc;
+  font-weight: 700;
+  font-size: 1.8rem;
+  letter-spacing: 0.05em;
 }
 
 footer p {
   font-style: italic;
   font-size: 0.9rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
 main {
   flex: 1;
-  padding: 1.5rem 1rem 3rem 1rem;
-  max-width: 1000px;
-  margin: 0 auto;
+  max-width: 960px;
+  margin: 1.5rem auto 2rem auto;
+  padding: 0 1rem;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 1.8rem;
 }
+
+/* DATOS PRINCIPALES - TARJETAS PEQUEÑAS */
 
 #datos-clima {
   display: flex;
-  justify-content: space-around;
-  gap: 2rem;
+  justify-content: center;
+  gap: 1.2rem;
   flex-wrap: wrap;
 }
 
 .dato {
-  background: rgba(255, 255, 255, 0.9);
-  flex: 1 1 280px;
-  max-width: 300px;
-  border-radius: 15px;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-  padding: 1.5rem 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  flex: 1 1 140px;
+  max-width: 160px;
+  padding: 1.2rem 1rem;
   text-align: center;
-  transition: background-color 0.5s ease, box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease;
   cursor: default;
   user-select: none;
-  position: relative;
+}
+
+.dato:focus,
+.dato:hover {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.22);
+  outline: none;
 }
 
 .dato .icono {
-  font-size: 3.5rem;
-  margin-bottom: 0.7rem;
-  filter: drop-shadow(0 2px 1px rgba(0,0,0,0.1));
-}
-
-.dato h2 {
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  font-size: 1.6rem;
-  color: #022c43;
-}
-
-.dato p {
   font-size: 3rem;
-  font-weight: 900;
-  color: #03506f;
-  letter-spacing: 0.04em;
-  transition: color 0.5s ease;
-}
-
-/* Colores según rango */
-
-#temp-dato.high p {
-  color: #d62828; /* Rojo fuerte */
-}
-
-#temp-dato.low p {
-  color: #0077b6; /* Azul */
-}
-
-#hum-dato.high p {
-  color: #007f5f; /* Verde oscuro */
-}
-
-#hum-dato.low p {
-  color: #9b2226; /* Rojo oscuro */
-}
-
-#pres-dato.high p {
-  color: #6a994e; /* Verde claro */
-}
-
-#pres-dato.low p {
-  color: #bc4749; /* Rojo suave */
-}
-
-#mensaje-clima {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 15px;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
-  padding: 1rem 1.5rem;
-  font-size: 1.1rem;
-  color: #022c43;
-  text-align: center;
-  min-height: 48px;
-  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #4a90e2;
   user-select: none;
 }
 
-/* Gráficos */
+.dato h2 {
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 0.3rem;
+  color: #333;
+}
+
+.dato p {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+/* RANGOS DE COLOR */
+
+#temp-dato.high p {
+  color: #e53935;
+}
+
+#temp-dato.low p {
+  color: #1e88e5;
+}
+
+#hum-dato.high p {
+  color: #43a047;
+}
+
+#hum-dato.low p {
+  color: #e53935;
+}
+
+#pres-dato.high p {
+  color: #7cb342;
+}
+
+#pres-dato.low p {
+  color: #ef6c00;
+}
+
+/* MENSAJE */
+
+#mensaje-clima {
+  background: #eceff1;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  padding: 0.75rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #37474f;
+  text-align: center;
+  min-height: 44px;
+  user-select: none;
+}
+
+/* GRÁFICOS - GRID ORDENADO */
+
+#graficos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+  gap: 1.4rem;
+}
 
 #grafico-temperatura,
 #grafico-humedad,
 #grafico-presion {
-  max-width: 100%;
-  background: rgba(255,255,255,0.95);
-  border-radius: 15px;
-  box-shadow: 0 7px 12px rgba(0,0,0,0.15);
-  padding: 0.5rem 1rem 1rem 1rem;
-  height: 240px;
-  margin-bottom: 1.5rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+  padding: 0.8rem 1rem 1rem 1rem;
+  height: 220px;
 }
 
-/* Controles */
+/* CONTROLES */
 
 #controles {
-  text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 #btn-toggle {
-  background-color: #0077b6;
+  background-color: #4a90e2;
   border: none;
   color: white;
-  padding: 0.8rem 1.8rem;
-  font-size: 1.2rem;
+  padding: 0.6rem 1.6rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  border-radius: 40px;
+  border-radius: 30px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,119,182,0.6);
+  box-shadow: 0 4px 10px rgba(74,144,226,0.7);
   transition: background-color 0.3s ease, box-shadow 0.2s ease;
   user-select: none;
 }
 
-#btn-toggle:hover {
-  background-color: #005f87;
-  box-shadow: 0 6px 16px rgba(0,95,135,0.9);
+#btn-toggle:hover,
+#btn-toggle:focus {
+  background-color: #357ab7;
+  box-shadow: 0 6px 14px rgba(53,122,183,0.9);
+  outline: none;
 }
 
-/* Responsive */
+/* RESPONSIVE */
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   #datos-clima {
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
   }
+
   .dato {
-    max-width: 90%;
+    max-width: 90vw;
+    flex-basis: auto;
   }
-  main {
-    padding: 1rem;
+
+  #graficos {
+    grid-template-columns: 1fr;
   }
 }
