@@ -3,28 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Visibilidad Avanzada del Clima con Sensores</title>
+  <title>Visibilidad Mejorada del Clima</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
-    <h1>Visibilidad Avanzada del Clima - Sensores</h1>
+    <h1>Visibilidad Mejorada del Clima</h1>
   </header>
 
   <main>
-    <section id="datos-clima">
-      <article class="dato" id="temp-dato">
+    <section id="datos-clima" aria-label="Datos principales del clima">
+      <article class="dato" id="temp-dato" tabindex="0">
         <div class="icono" aria-hidden="true">🌡️</div>
         <h2>Temperatura</h2>
         <p><span id="temperatura">--</span> °C</p>
       </article>
-      <article class="dato" id="hum-dato">
+      <article class="dato" id="hum-dato" tabindex="0">
         <div class="icono" aria-hidden="true">💧</div>
         <h2>Humedad</h2>
         <p><span id="humedad">--</span> %</p>
       </article>
-      <article class="dato" id="pres-dato">
+      <article class="dato" id="pres-dato" tabindex="0">
         <div class="icono" aria-hidden="true">🌬️</div>
         <h2>Presión</h2>
         <p><span id="presion">--</span> hPa</p>
@@ -35,14 +35,14 @@
       <p id="mensaje"></p>
     </section>
 
-    <section id="graficos">
+    <section id="graficos" aria-label="Gráficos de evolución del clima">
       <canvas id="grafico-temperatura" aria-label="Gráfico de Temperatura" role="img"></canvas>
       <canvas id="grafico-humedad" aria-label="Gráfico de Humedad" role="img"></canvas>
       <canvas id="grafico-presion" aria-label="Gráfico de Presión" role="img"></canvas>
     </section>
 
     <section id="controles">
-      <button id="btn-toggle">Pausar Actualización</button>
+      <button id="btn-toggle" aria-pressed="false">Pausar Actualización</button>
     </section>
   </main>
 
