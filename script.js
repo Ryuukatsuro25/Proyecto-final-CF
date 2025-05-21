@@ -5,7 +5,7 @@ const historialHumedad = [];
 const historialPresion = [];
 const etiquetasTiempo = [];
 
-// Elementos DOM
+// Referencias a elementos DOM
 const tempSpan = document.getElementById('temperatura');
 const humSpan = document.getElementById('humedad');
 const presSpan = document.getElementById('presion');
@@ -13,218 +13,146 @@ const mensajeClima = document.getElementById('mensaje');
 
 const btnToggle = document.getElementById('btn-toggle');
 
-// Genera valores aleatorios para los sensores
+// Inicializar gráfica con Chart.js
+const ctx = document.getElementById('grafica').getContext('2d');
+const grafica = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: etiquetasTiempo,
+    datasets: [
+      {
+        label: 'Temperatura (°C)',
+        data: historialTemperatura,
+        borderColor: 'rgb(30, 58, 138)',
+        backgroundColor: 'rgba(30, 58, 138, 0.1)',
+        tension: 0.3,
+      },
+      {
+        label: 'Humedad (%)',
+        data: historialHumedad,
+        borderColor: 'rgb(59, 130, 246)',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        tension: 0.3,
+      },
+      {
+        label: 'Presión (hPa)',
+        data: historialPresion,
+        borderColor: 'rgb(107, 114, 128)',
+        backgroundColor: 'rgba(107, 114, 128, 0.1)',
+        tension: 0.3,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    animation: {
+      duration: 500
+    },
+    scales: {
+      y: {
+        beginAtZero: false,
+        grace: '5%'
+      }
+    },
+    plugins: {
+      legend: {
+        position: 'top'
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false
+      }
+    },
+    interaction: {
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false
+    }
+  }
+});
+
+// Función para generar valores aleatorios para los sensores
+function generarDatosClima() {
+  // Generar valores simulados con variación suave
+  const nuevaTemp = generarTemperatura();
+  const nuevaHum = generarHumedad();
+  const nuevaPres = generarPresion();
+
+  // Actualizar valores en el DOM
+  actualizarDatos(nuevaTemp, nuevaHum, nuevaPres);
+  actualizarGrafica(nuevaTemp, nuevaHum, nuevaPres);
+}
+
+// Generadores individuales con lógica de variación
+let tempActual = 20;
+let humActual = 50;
+let presActual = 1013;
+
 function generarTemperatura() {
-  // Temperatura entre 15 y 35 °C
-  return (Math.random() * 20 + 15).toFixed(1);
+  // Variación aleatoria +/- 0.5 grados, dentro de 0-40 °C
+  tempActual += (Math.random() - 0.5);
+  tempActual = Math.min(40, Math.max(0, tempActual));
+  return tempActual.toFixed(1);
 }
 
 function generarHumedad() {
-  // Humedad relativa entre 30% y 90%
-  return (Math.random() * 60 + 30).toFixed(0);
+  // Variación aleatoria +/- 1%, dentro de 10-100%
+  humActual += (Math.random() - 0.5) * 2;
+  humActual = Math.min(100, Math.max(10, humActual));
+  return humActual.toFixed(0);
 }
 
 function generarPresion() {
-  // Presión atmosférica entre 980 y 1030 hPa
-  return (Math.random() * 50 + 980).toFixed(1);
+  // Variación aleatoria +/- 0.8 hPa, dentro de 980-1050 hPa
+  presActual += (Math.random() - 0.5) * 1.6;
+  presActual = Math.min(1050, Math.max(980, presActual));
+  return presActual.toFixed(0);
 }
 
-// Actualiza los colores y clases según valores
-function actualizarColores(temp, hum, pres) {
-  const tempDiv = document.getElementById('temp-dato');
-  const humDiv = document.getElementById('hum-dato');
-  const presDiv = document.getElementById('pres-dato');
-
-  // Temperatura
-  tempDiv.classList.remove('high', 'low');
-  if (temp >= 30) tempDiv.classList.add('high');
-  else if (temp <= 18) tempDiv.classList.add('low');
-
-  // Humedad
-  humDiv.classList.remove('high', 'low');
-  if (hum >= 70) humDiv.classList.add('high');
-  else if (hum <= 40) humDiv.classList.add('low');
-
-  // Presión
-  presDiv.classList.remove('high', 'low');
-  if (pres >= 1020) presDiv.classList.add('high');
-  else if (pres <= 990) presDiv.classList.add('low');
-}
-
-// Actualiza el mensaje del clima
-function actualizarMensaje(temp, hum) {
-  if (temp >= 30 && hum >= 70) {
-    mensajeClima.textContent = 'Clima caluroso y húmedo, ¡mantente hidratado!';
-  } else if (temp <= 18 && hum <= 40) {
-    mensajeClima.textContent = 'Clima frío y seco, ¡abrígate bien!';
-  } else if (temp >= 30) {
-    mensajeClima.textContent = 'Clima caluroso, evita la exposición prolongada al sol.';
-  } else if (temp <= 18) {
-    mensajeClima.textContent = 'Clima fresco, una chaqueta ligera es recomendable.';
-  } else {
-    mensajeClima.textContent = 'Clima agradable y estable.';
-  }
-}
-
-// Función para actualizar datos y gráficos
-function actualizarDatos() {
-  if (!actualizando) return;
-
-  const temp = parseFloat(generarTemperatura());
-  const hum = parseInt(generarHumedad());
-  const pres = parseFloat(generarPresion());
-
-  tempSpan.textContent = temp.toFixed(1);
+// Actualiza los valores en el DOM
+function actualizarDatos(temp, hum, pres) {
+  tempSpan.textContent = temp;
   humSpan.textContent = hum;
-  presSpan.textContent = pres.toFixed(1);
+  presSpan.textContent = pres;
+  mensajeClima.textContent = 'Datos actualizados al ' + new Date().toLocaleTimeString();
+}
 
-  actualizarColores(temp, hum, pres);
-  actualizarMensaje(temp, hum);
+// Actualiza la gráfica con nuevos datos
+function actualizarGrafica(temp, hum, pres) {
+  const ahora = new Date().toLocaleTimeString();
 
-  // Guardar datos en el historial
-  const ahora = new Date();
-  const horaMin = ahora.getHours().toString().padStart(2, '0') + ':' + ahora.getMinutes().toString().padStart(2, '0');
-  etiquetasTiempo.push(horaMin);
+  // Añadir nuevas etiquetas y datos
+  etiquetasTiempo.push(ahora);
   historialTemperatura.push(temp);
   historialHumedad.push(hum);
   historialPresion.push(pres);
 
-  // Mantener máximo 10 datos
-  if (etiquetasTiempo.length > 10) {
+  // Mantener solo los últimos 20 datos
+  if (etiquetasTiempo.length > 20) {
     etiquetasTiempo.shift();
     historialTemperatura.shift();
     historialHumedad.shift();
     historialPresion.shift();
   }
 
-  // Actualizar gráficos
-  graficoTemperatura.data.labels = etiquetasTiempo;
-  graficoTemperatura.data.datasets[0].data = historialTemperatura;
-  graficoTemperatura.update();
-
-  graficoHumedad.data.labels = etiquetasTiempo;
-  graficoHumedad.data.datasets[0].data = historialHumedad;
-  graficoHumedad.update();
-
-  graficoPresion.data.labels = etiquetasTiempo;
-  graficoPresion.data.datasets[0].data = historialPresion;
-  graficoPresion.update();
+  // Actualizar gráfica
+  grafica.update();
 }
 
-// Configuración de gráficos con Chart.js
-
-const ctxTemp = document.getElementById('grafico-temperatura').getContext('2d');
-const graficoTemperatura = new Chart(ctxTemp, {
-  type: 'line',
-  data: {
-    labels: etiquetasTiempo,
-    datasets: [{
-      label: 'Temperatura (°C)',
-      data: historialTemperatura,
-      borderColor: '#d62828',
-      backgroundColor: 'rgba(214, 40, 40, 0.2)',
-      fill: true,
-      tension: 0.3,
-      pointRadius: 4,
-      pointHoverRadius: 7,
-      borderWidth: 3
-    }]
-  },
-  options: {
-    responsive: true,
-    animation: {
-      duration: 700
-    },
-    scales: {
-      y: {
-        min: 10,
-        max: 40,
-        ticks: {
-          stepSize: 5
-        }
-      }
-    }
-  }
-});
-
-const ctxHum = document.getElementById('grafico-humedad').getContext('2d');
-const graficoHumedad = new Chart(ctxHum, {
-  type: 'line',
-  data: {
-    labels: etiquetasTiempo,
-    datasets: [{
-      label: 'Humedad (%)',
-      data: historialHumedad,
-      borderColor: '#007f5f',
-      backgroundColor: 'rgba(0, 127, 95, 0.2)',
-      fill: true,
-      tension: 0.3,
-      pointRadius: 4,
-      pointHoverRadius: 7,
-      borderWidth: 3
-    }]
-  },
-  options: {
-    responsive: true,
-    animation: {
-      duration: 700
-    },
-    scales: {
-      y: {
-        min: 20,
-        max: 100,
-        ticks: {
-          stepSize: 10
-        }
-      }
-    }
-  }
-});
-
-const ctxPres = document.getElementById('grafico-presion').getContext('2d');
-const graficoPresion = new Chart(ctxPres, {
-  type: 'line',
-  data: {
-    labels: etiquetasTiempo,
-    datasets: [{
-      label: 'Presión (hPa)',
-      data: historialPresion,
-      borderColor: '#6a994e',
-      backgroundColor: 'rgba(106, 153, 78, 0.2)',
-      fill: true,
-      tension: 0.3,
-      pointRadius: 4,
-      pointHoverRadius: 7,
-      borderWidth: 3
-    }]
-  },
-  options: {
-    responsive: true,
-    animation: {
-      duration: 700
-    },
-    scales: {
-      y: {
-        min: 970,
-        max: 1050,
-        ticks: {
-          stepSize: 10
-        }
-      }
-    }
-  }
-});
-
-// Control de actualización con botón
-
+// Control para pausar o continuar actualización
 btnToggle.addEventListener('click', () => {
   actualizando = !actualizando;
-  btnToggle.textContent = actualizando ? 'Pausar Actualización' : 'Reanudar Actualización';
-  if (actualizando) actualizarDatos();
+  btnToggle.textContent = actualizando ? 'Pausar Actualización' : 'Continuar Actualización';
+  btnToggle.setAttribute('aria-pressed', actualizando);
 });
 
-// Actualiza datos al cargar la página
-actualizarDatos();
+// Loop principal de actualización de datos cada 3 segundos
+function bucleActualizacion() {
+  if (actualizando) {
+    generarDatosClima();
+  }
+  setTimeout(bucleActualizacion, 3000);
+}
 
-// Actualiza cada 5 segundos
-setInterval(actualizarDatos, 5000);
+// Iniciar actualización automática
+bucleActualizacion();

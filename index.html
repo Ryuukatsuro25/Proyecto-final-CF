@@ -8,48 +8,43 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
+  <header role="banner">
     <h1>Visibilidad Mejorada del Clima</h1>
   </header>
 
-  <main>
+  <main role="main" id="app" tabindex="-1">
     <section id="datos-clima" aria-label="Datos principales del clima">
       <article class="dato" id="temp-dato" tabindex="0">
         <div class="icono" aria-hidden="true">🌡️</div>
         <h2>Temperatura</h2>
         <p><span id="temperatura">--</span> °C</p>
       </article>
-      <article class="dato" id="hum-dato" tabindex="0">
+      <article class="dato" id="humedad-dato" tabindex="0">
         <div class="icono" aria-hidden="true">💧</div>
         <h2>Humedad</h2>
         <p><span id="humedad">--</span> %</p>
       </article>
-      <article class="dato" id="pres-dato" tabindex="0">
+      <article class="dato" id="presion-dato" tabindex="0">
         <div class="icono" aria-hidden="true">🌬️</div>
-        <h2>Presión</h2>
+        <h2>Presión Atmosférica</h2>
         <p><span id="presion">--</span> hPa</p>
       </article>
     </section>
 
-    <section id="mensaje-clima" aria-live="polite" aria-atomic="true">
-      <p id="mensaje"></p>
+    <section id="grafica-clima" aria-label="Gráfica de evolución del clima">
+      <canvas id="grafica" aria-describedby="mensaje"></canvas>
+      <p id="mensaje" role="alert" aria-live="polite">Esperando datos...</p>
     </section>
 
-    <section id="graficos" aria-label="Gráficos de evolución del clima">
-      <canvas id="grafico-temperatura" aria-label="Gráfico de Temperatura" role="img"></canvas>
-      <canvas id="grafico-humedad" aria-label="Gráfico de Humedad" role="img"></canvas>
-      <canvas id="grafico-presion" aria-label="Gráfico de Presión" role="img"></canvas>
-    </section>
-
-    <section id="controles">
-      <button id="btn-toggle" aria-pressed="false">Pausar Actualización</button>
+    <section id="controles" aria-label="Controles de actualización del clima">
+      <button id="btn-toggle" aria-pressed="true">Pausar Actualización</button>
     </section>
   </main>
 
-  <footer>
-    <p>Proyecto avanzado de visualización del clima con sensores &copy; 2025</p>
+  <footer role="contentinfo">
+    <p>© 2025 Visibilidad Mejorada del Clima</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
