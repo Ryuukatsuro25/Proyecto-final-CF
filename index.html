@@ -3,33 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Visibilidad del Clima con Sensores</title>
+  <title>Visibilidad Avanzada del Clima con Sensores</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
-    <h1>Visibilidad del Clima - Sensores</h1>
+    <h1>Visibilidad Avanzada del Clima - Sensores</h1>
   </header>
 
   <main>
-    <section id="clima">
-      <div class="dato">
+    <section id="datos-clima">
+      <article class="dato" id="temp-dato">
+        <div class="icono" aria-hidden="true">🌡️</div>
         <h2>Temperatura</h2>
         <p><span id="temperatura">--</span> °C</p>
-      </div>
-      <div class="dato">
+      </article>
+      <article class="dato" id="hum-dato">
+        <div class="icono" aria-hidden="true">💧</div>
         <h2>Humedad</h2>
         <p><span id="humedad">--</span> %</p>
-      </div>
-      <div class="dato">
-        <h2>Presión Atmosférica</h2>
+      </article>
+      <article class="dato" id="pres-dato">
+        <div class="icono" aria-hidden="true">🌬️</div>
+        <h2>Presión</h2>
         <p><span id="presion">--</span> hPa</p>
-      </div>
+      </article>
+    </section>
+
+    <section id="mensaje-clima" aria-live="polite" aria-atomic="true">
+      <p id="mensaje"></p>
+    </section>
+
+    <section id="graficos">
+      <canvas id="grafico-temperatura" aria-label="Gráfico de Temperatura" role="img"></canvas>
+      <canvas id="grafico-humedad" aria-label="Gráfico de Humedad" role="img"></canvas>
+      <canvas id="grafico-presion" aria-label="Gráfico de Presión" role="img"></canvas>
+    </section>
+
+    <section id="controles">
+      <button id="btn-toggle">Pausar Actualización</button>
     </section>
   </main>
 
   <footer>
-    <p>Proyecto de visualización del clima con sensores &copy; 2025</p>
+    <p>Proyecto avanzado de visualización del clima con sensores &copy; 2025</p>
   </footer>
 
   <script src="script.js"></script>
