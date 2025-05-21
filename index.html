@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gestión Pasajeros y Conductores - Proyecto Completo</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header>
+  <h1>Gestión Pasajeros y Conductores</h1>
+  <p>Configuración, cuentas bancarias y descarga JSON</p>
+</header>
+
+<main>
+  <section id="pasajeros-section" class="user-section">
+    <h2>Configuración Pasajeros</h2>
+    <form id="pasajero-form">
+      <label>
+        Nombre:
+        <input type="text" id="pasajero-nombre" required />
+      </label>
+
+      <label>
+        Estado de cuenta:
+        <select id="pasajero-estado-cuenta">
+          <option value="activo">Activo</option>
+          <option value="suspendido">Suspendido</option>
+          <option value="eliminado">Eliminado</option>
+        </select>
+      </label>
+
+      <label>
+        Método de pago preferido:
+        <select id="pasajero-metodo-pago">
+          <option value="Efectivo">Efectivo</option>
+          <option value="Nequi">Nequi</option>
+          <option value="PSE">PSE</option>
+          <option value="PayU">PayU</option>
+        </select>
+      </label>
+
+      <label>
+        Tema visual:
+        <select id="pasajero-tema-visual">
+          <option value="claro">Claro</option>
+          <option value="oscuro">Oscuro</option>
+        </select>
+      </label>
+
+      <fieldset>
+        <legend>Cuentas Bancarias (máximo 3)</legend>
+        <div id="pasajero-cuentas-list"></div>
+        <button type="button" id="pasajero-agregar-cuenta-btn">Agregar Cuenta Bancaria</button>
+      </fieldset>
+
+      <div class="form-buttons">
+        <button type="submit">Guardar Pasajero</button>
+      </div>
+    </form>
+  </section>
+
+  <section id="conductores-section" class="user-section">
+    <h2>Configuración Conductores</h2>
+    <form id="conductor-form">
+      <label>
+        Nombre:
+        <input type="text" id="conductor-nombre" required />
+      </label>
+
+      <label>
+        Estado de cuenta:
+        <select id="conductor-estado-cuenta">
+          <option value="activo">Activo</option>
+          <option value="suspendido">Suspendido</option>
+          <option value="eliminado">Eliminado</option>
+        </select>
+      </label>
+
+      <label>
+        Método de pago preferido:
+        <select id="conductor-metodo-pago">
+          <option value="Efectivo">Efectivo</option>
+          <option value="Nequi">Nequi</option>
+          <option value="PSE">PSE</option>
+          <option value="PayU">PayU</option>
+        </select>
+      </label>
+
+      <label>
+        Tema visual:
+        <select id="conductor-tema-visual">
+          <option value="claro">Claro</option>
+          <option value="oscuro">Oscuro</option>
+        </select>
+      </label>
+
+      <fieldset>
+        <legend>Cuentas Bancarias (máximo 3)</legend>
+        <div id="conductor-cuentas-list"></div>
+        <button type="button" id="conductor-agregar-cuenta-btn">Agregar Cuenta Bancaria</button>
+      </fieldset>
+
+      <div class="form-buttons">
+        <button type="submit">Guardar Conductor</button>
+      </div>
+    </form>
+  </section>
+
+  <section id="json-section">
+    <h2>Datos JSON actuales</h2>
+    <button id="btn-descargar-json">Descargar JSON completo</button>
+    <pre id="json-visualizador"></pre>
+  </section>
+</main>
+
+<footer>
+  <p>© 2025 - Proyecto completo de gestión pasajeros y conductores</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
