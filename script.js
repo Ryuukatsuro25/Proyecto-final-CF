@@ -1,19 +1,20 @@
-// Variables para guardar estado de actualización y datos históricos
 let actualizando = true;
 const historialTemperatura = [];
 const historialHumedad = [];
 const historialPresion = [];
 const etiquetasTiempo = [];
 
-// Referencias a elementos DOM
 const tempSpan = document.getElementById('temperatura');
 const humSpan = document.getElementById('humedad');
 const presSpan = document.getElementById('presion');
 const mensajeClima = document.getElementById('mensaje');
 
 const btnToggle = document.getElementById('btn-toggle');
+const btnBluetooth = document.getElementById('btn-bluetooth');
 
-// Inicializar gráfica con Chart.js
+let dispositivoBluetooth = null;
+let caracteristicaTemperatura, caracteristicaHumedad, caracteristicaPresion;
+
 const ctx = document.getElementById('grafica').getContext('2d');
 const grafica = new Chart(ctx, {
   type: 'line',
@@ -45,9 +46,7 @@ const grafica = new Chart(ctx, {
   },
   options: {
     responsive: true,
-    animation: {
-      duration: 500
-    },
+    animation: { duration: 500 },
     scales: {
       y: {
         beginAtZero: false,
@@ -55,13 +54,8 @@ const grafica = new Chart(ctx, {
       }
     },
     plugins: {
-      legend: {
-        position: 'top'
-      },
-      tooltip: {
-        mode: 'index',
-        intersect: false
-      }
+      legend: { position: 'top' },
+      tooltip: { mode: 'index', intersect: false }
     },
     interaction: {
       mode: 'nearest',
@@ -71,63 +65,39 @@ const grafica = new Chart(ctx, {
   }
 });
 
-// Función para generar valores aleatorios para los sensores
-function generarDatosClima() {
-  // Generar valores simulados con variación suave
-  const nuevaTemp = generarTemperatura();
-  const nuevaHum = generarHumedad();
-  const nuevaPres = generarPresion();
-
-  // Actualizar valores en el DOM
-  actualizarDatos(nuevaTemp, nuevaHum, nuevaPres);
-  actualizarGrafica(nuevaTemp, nuevaHum, nuevaPres);
-}
-
-// Generadores individuales con lógica de variación
-let tempActual = 20;
-let humActual = 50;
-let presActual = 1013;
-
+// Simulación sin Bluetooth
+let tempActual = 20, humActual = 50, presActual = 1013;
 function generarTemperatura() {
-  // Variación aleatoria +/- 0.5 grados, dentro de 0-40 °C
   tempActual += (Math.random() - 0.5);
-  tempActual = Math.min(40, Math.max(0, tempActual));
-  return tempActual.toFixed(1);
+  return Number(Math.min(40, Math.max(0, tempActual)).toFixed(1));
 }
-
 function generarHumedad() {
-  // Variación aleatoria +/- 1%, dentro de 10-100%
   humActual += (Math.random() - 0.5) * 2;
-  humActual = Math.min(100, Math.max(10, humActual));
-  return humActual.toFixed(0);
+  return Number(Math.min(100, Math.max(10, humActual)).toFixed(0));
 }
-
 function generarPresion() {
-  // Variación aleatoria +/- 0.8 hPa, dentro de 980-1050 hPa
   presActual += (Math.random() - 0.5) * 1.6;
-  presActual = Math.min(1050, Math.max(980, presActual));
-  return presActual.toFixed(0);
+  return Number(Math.min(1050, Math.max(980, presActual)).toFixed(0));
 }
 
-// Actualiza los valores en el DOM
 function actualizarDatos(temp, hum, pres) {
   tempSpan.textContent = temp;
   humSpan.textContent = hum;
   presSpan.textContent = pres;
-  mensajeClima.textContent = 'Datos actualizados al ' + new Date().toLocaleTimeString();
+  actualizarResumenAccesible(temp, hum, pres);
 }
 
-// Actualiza la gráfica con nuevos datos
+function actualizarResumenAccesible(temp, hum, pres) {
+  mensajeClima.textContent = `Temperatura: ${temp} °C, Humedad: ${hum} %, Presión: ${pres} hPa (actualizado a las ${new Date().toLocaleTimeString()})`;
+}
+
 function actualizarGrafica(temp, hum, pres) {
   const ahora = new Date().toLocaleTimeString();
-
-  // Añadir nuevas etiquetas y datos
   etiquetasTiempo.push(ahora);
-  historialTemperatura.push(temp);
-  historialHumedad.push(hum);
-  historialPresion.push(pres);
+  historialTemperatura.push(Number(temp));
+  historialHumedad.push(Number(hum));
+  historialPresion.push(Number(pres));
 
-  // Mantener solo los últimos 20 datos
   if (etiquetasTiempo.length > 20) {
     etiquetasTiempo.shift();
     historialTemperatura.shift();
@@ -135,24 +105,83 @@ function actualizarGrafica(temp, hum, pres) {
     historialPresion.shift();
   }
 
-  // Actualizar gráfica
   grafica.update();
 }
 
-// Control para pausar o continuar actualización
 btnToggle.addEventListener('click', () => {
   actualizando = !actualizando;
   btnToggle.textContent = actualizando ? 'Pausar Actualización' : 'Continuar Actualización';
   btnToggle.setAttribute('aria-pressed', actualizando);
+  btnToggle.classList.toggle('pausado', !actualizando);
 });
 
-// Loop principal de actualización de datos cada 3 segundos
+btnBluetooth.addEventListener('click', () => {
+  btnBluetooth.disabled = true;
+  conectarBluetooth().finally(() => {
+    btnBluetooth.disabled = false;
+  });
+});
+
 function bucleActualizacion() {
   if (actualizando) {
-    generarDatosClima();
+    if (dispositivoBluetooth && caracteristicaTemperatura && caracteristicaHumedad && caracteristicaPresion) {
+      leerCaracteristicasBluetooth().then(({ temp, hum, pres }) => {
+        actualizarDatos(temp, hum, pres);
+        actualizarGrafica(temp, hum, pres);
+      }).catch(console.error);
+    } else {
+      const t = generarTemperatura(), h = generarHumedad(), p = generarPresion();
+      actualizarDatos(t, h, p);
+      actualizarGrafica(t, h, p);
+    }
   }
   setTimeout(bucleActualizacion, 3000);
 }
 
-// Iniciar actualización automática
+function leerCaracteristicasBluetooth() {
+  return Promise.all([
+    caracteristicaTemperatura.readValue(),
+    caracteristicaHumedad.readValue(),
+    caracteristicaPresion.readValue()
+  ]).then(([tempData, humData, presData]) => ({
+    temp: tempData.getUint8(0),
+    hum: humData.getUint8(0),
+    pres: presData.getUint16(0, true)
+  }));
+}
+
+function conectarBluetooth() {
+  return navigator.bluetooth.requestDevice({
+    filters: [{ services: ['environmental_sensing'] }]
+  }).then(device => {
+    dispositivoBluetooth = device;
+    dispositivoBluetooth.addEventListener('gattserverdisconnected', manejarDesconexion);
+    return device.gatt.connect();
+  }).then(server => {
+    return server.getPrimaryService('environmental_sensing');
+  }).then(service => {
+    return Promise.all([
+      service.getCharacteristic('temperature'),
+      service.getCharacteristic('humidity'),
+      service.getCharacteristic('pressure')
+    ]);
+  }).then(([tempChar, humChar, presChar]) => {
+    caracteristicaTemperatura = tempChar;
+    caracteristicaHumedad = humChar;
+    caracteristicaPresion = presChar;
+    mensajeClima.textContent = "Bluetooth conectado y listo";
+  }).catch(error => {
+    console.error(error);
+    mensajeClima.textContent = "Error al conectar Bluetooth";
+  });
+}
+
+function manejarDesconexion() {
+  mensajeClima.textContent = "Bluetooth desconectado";
+  caracteristicaTemperatura = null;
+  caracteristicaHumedad = null;
+  caracteristicaPresion = null;
+  dispositivoBluetooth = null;
+}
+
 bucleActualizacion();
